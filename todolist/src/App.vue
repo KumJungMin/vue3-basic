@@ -1,21 +1,26 @@
 <template>
-  <div class="name">{{ greet }}</div>
+  <div class="name">{{ name }}, {{ array }}</div>
+  <button class="btn btn-primary" @click="onClick">클릭</button>
 </template>
 
 <script>
+// template의 변수가 동적인 변수로 바꾸는 하는 법
+import { ref, reactive } from "vue"; // 1. ref를 import
 export default {
   setup() {
-    const name = "vue3";
+    let name = ref("vue3"); // 2. 변수를 ref객체로 리턴
+    let array = reactive([1, 2]); // 객체는 reactive를 사용하여 반응적인 객체복사본 리턴
 
-    // 2. 함수 정의
-    const greeting = (name) => {
-      return `hello ${name}`;
+    // 1. 함수 정의
+    const onClick = () => {
+      name.value = "is awesome"; // 3. ref처리한 변수의 값을 변경할 때는 변수.value에 접근해야함
+      array.push(3);
+      console.log(name, array);
     };
-    const greet = greeting(name);
     return {
-      // 1. Obj에서 원하는 변수, 함수를 return
-      //  -> template에서 접근 가능한 변수, 함수
-      greet,
+      name,
+      array,
+      onClick,
     };
   },
 };
