@@ -1,6 +1,7 @@
 <template>
   <div class="name">{{ name }}</div>
-  <input type="text" :value="name" @input="updateName" />
+  <input type="text" v-model="name" />
+  <!-- v-model: 변수 바인딩 + 변수 변경 이벤트 -->
   <button class="btn btn-primary" @click="onClick">클릭</button>
 </template>
 
@@ -14,13 +15,9 @@ export default {
     const onClick = () => {
       name.value = "is awesome";
     };
-    const updateName = (e) => {
-      name.value = e.target.value;
-    };
     return {
       name,
       onClick,
-      updateName,
     };
   },
 };
