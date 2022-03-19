@@ -3,7 +3,7 @@
   <div class="container">
     <TodoSimepleForm @add-todo="addTodo" />
     <div v-if="!todos.length">추가된 Todo가 없습니다.</div>
-    <TodoList v-else />
+    <TodoList :todos="todos" v-else />
   </div>
 </template>
 

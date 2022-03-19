@@ -25,7 +25,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    todos: {
+      type: Array,
+      required: true,
+    },
+  },
+};
 </script>
 
 <style></style>
