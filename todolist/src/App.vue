@@ -3,38 +3,17 @@
   <div class="container">
     <TodoSimepleForm @add-todo="addTodo" />
     <div v-if="!todos.length">추가된 Todo가 없습니다.</div>
-    <div v-else class="card">
-      <div
-        class="card-body p-2 d-flex align-items-center"
-        v-for="(todo, idx) in todos"
-        :key="todo.id"
-      >
-        <div class="form-check flex-grow-1">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            v-model="todo.completed"
-          />
-          <label class="form-check-label" :class="{ todo: todo.completed }">{{
-            todo.subject
-          }}</label>
-        </div>
-        <div>
-          <button class="btn btn-danger btn-sm" @click="deleteTodo(idx)">
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
+    <TodoList v-else />
   </div>
 </template>
 
 <script>
 import { reactive } from "vue";
 import TodoSimepleForm from "./components/TodoSimpleForm.vue";
+import TodoList from "./components/TodoList.vue";
 
 export default {
-  components: { TodoSimepleForm },
+  components: { TodoSimepleForm, TodoList },
   setup() {
     const todos = reactive([]);
     const deleteTodo = (idx) => {
