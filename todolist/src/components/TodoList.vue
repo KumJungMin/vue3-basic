@@ -9,7 +9,7 @@
         <input
           class="form-check-input"
           type="checkbox"
-          v-model="todo.completed"
+          @change="toggleTodo(idx)"
         />
         <label class="form-check-label" :class="{ todo: todo.completed }">{{
           todo.subject
@@ -31,6 +31,22 @@ export default {
       type: Array,
       required: true,
     },
+  },
+  // emit을 기재해 주어야 함
+  emits: ["toggle-todo", "delete-todo"],
+
+  setup(props, { emit }) {
+    const toggleTodo = (idx) => {
+      emit("toggle-todo", idx);
+    };
+    const deleteTodo = (idx) => {
+      emit("delete-todo", idx);
+    };
+
+    return {
+      toggleTodo,
+      deleteTodo,
+    };
   },
 };
 </script>

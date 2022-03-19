@@ -3,7 +3,12 @@
   <div class="container">
     <TodoSimepleForm @add-todo="addTodo" />
     <div v-if="!todos.length">추가된 Todo가 없습니다.</div>
-    <TodoList :todos="todos" v-else />
+    <TodoList
+      :todos="todos"
+      v-else
+      @toggle-todo="toggleTodo"
+      @delete-todo="deleteTodo"
+    />
   </div>
 </template>
 
@@ -22,10 +27,15 @@ export default {
     const addTodo = (todo) => {
       todos.push(todo);
     };
+    const toggleTodo = (idx) => {
+      todos[idx].completed = !todos[idx].completed;
+    };
+
     return {
       todos,
       deleteTodo,
       addTodo,
+      toggleTodo,
     };
   },
 };
