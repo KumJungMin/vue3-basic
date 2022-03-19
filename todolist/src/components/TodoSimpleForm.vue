@@ -18,7 +18,8 @@
 <script>
 import { ref } from "vue";
 export default {
-  setup() {
+  emits: ["add-todo"],
+  setup(props, { emit }) {
     const todo = ref("");
     const hasError = ref(false);
     const onSubmit = () => {
@@ -29,6 +30,9 @@ export default {
           subject: todo.value,
           completed: false,
         };
+        emit("add-todo", newTodo);
+        hasError.value = false;
+        todo.value = "";
       }
     };
 

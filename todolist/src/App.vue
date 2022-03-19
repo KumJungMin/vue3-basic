@@ -1,7 +1,7 @@
 <template>
   <h2>To-Do List</h2>
   <div class="container">
-    <TodoSimepleForm />
+    <TodoSimepleForm @add-todo="addTodo" />
     <div v-if="!todos.length">추가된 Todo가 없습니다.</div>
     <div v-else class="card">
       <div
@@ -40,10 +40,13 @@ export default {
     const deleteTodo = (idx) => {
       todos.splice(idx, 1);
     };
-
+    const addTodo = (todo) => {
+      todos.push(todo);
+    };
     return {
       todos,
       deleteTodo,
+      addTodo,
     };
   },
 };
