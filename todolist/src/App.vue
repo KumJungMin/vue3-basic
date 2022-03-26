@@ -23,18 +23,40 @@
 import { reactive, computed, ref } from "vue";
 import TodoSimepleForm from "./components/TodoSimpleForm.vue";
 import TodoList from "./components/TodoList.vue";
+import axios from "axios";
 
 export default {
   components: { TodoSimepleForm, TodoList },
   setup() {
     const todos = reactive([]);
-    const deleteTodo = (idx) => {
+    const deleteTodo = async (idx) => {
+      const id = todos[idx].id;
+      await axios.delete(`http://localhost:3000/todos/${id}`);
       todos.splice(idx, 1);
     };
-    const addTodo = (todo) => {
+
+    const getTodos = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:3000/todos");
+        Object.assign(todos, data); // reactive의 value를 변경하는 법
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getTodos();
+
+    const addTodo = async (todo) => {
+      await axios.post("http://localhost:3000/todos", {
+        subject: todo.subject,
+        completed: todo.completed,
+      });
       todos.push(todo);
     };
-    const toggleTodo = (idx) => {
+    const toggleTodo = async (idx) => {
+      const id = todos[idx].id;
+      await axios.patch(`http://localhost:3000/todos/${id}`, {
+        completed: !todos[idx].completed,
+      });
       todos[idx].completed = !todos[idx].completed;
     };
     const searchText = ref("");

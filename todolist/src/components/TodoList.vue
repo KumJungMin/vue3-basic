@@ -9,6 +9,7 @@
         <input
           class="form-check-input"
           type="checkbox"
+          :checked="todo.completed"
           @change="toggleTodo(idx)"
         />
         <label class="form-check-label" :class="{ todo: todo.completed }">{{

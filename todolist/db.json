@@ -1,13 +1,8 @@
 {
   "todos": [
     {
-      "subject": "밥 먹기",
-      "completed": false,
-      "id": 1
-    },
-    {
       "subject": "우유 사기",
-      "completed": false,
+      "completed": true,
       "id": 2
     },
     {
