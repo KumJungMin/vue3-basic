@@ -9,9 +9,9 @@
     />
     <hr />
     <TodoSimepleForm @add-todo="addTodo" />
-    <div v-if="!filteredTodos.length">추가된 Todo가 없습니다.</div>
+    <div v-if="!todos.length">추가된 Todo가 없습니다.</div>
     <TodoList
-      :todos="filteredTodos"
+      :todos="todos"
       v-else
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
@@ -51,6 +51,7 @@ export default {
     const numberOfTodos = ref(0);
     const limit = 5;
     const currentPage = ref(1);
+    const searchText = ref("");
 
     const numberOfPages = computed(() => {
       return Math.ceil(numberOfTodos.value / limit);
@@ -66,7 +67,7 @@ export default {
     const getTodos = async (page = currentPage.value) => {
       currentPage.value = page;
       try {
-        const { data, headers } = await axios.get(`http://localhost:3000/todos?_page=${page}&_limit=${limit}`);
+        const { data, headers } = await axios.get(`http://localhost:3000/todos?subject_like=${searchText.value}&_page=${page}&_limit=${limit}`);
         Object.assign(todos, data); // reactive의 value를 변경하는 법
         numberOfTodos.value = headers['x-total-count'];
       } catch (e) {
@@ -74,29 +75,6 @@ export default {
       }
     };
     getTodos();
-
-    // watch: 하나의 반응형 변수의 변화를 감지
-    // ref 변수를 감지하는 방법
-    watch(currentPage, (curr, prev) => {
-      console.log('hello', curr, prev)
-    })
-
-    // reactive 변수를 감지하는 방법
-    const test = reactive({age: 1});
-    watch(() =>  test.age, (curr, prev) => {
-      console.log(curr, prev)
-    })
-    test.age = 15;
-
-    // 여러 개를 watch하는 방법 
-    const test1 = ref(1);
-    const test2 = ref(2);
-    watch([test1, test2], ([new1, new2], [prev1, prev2]) => {
-      console.log('test1', new1, prev1);
-      console.log('test2', new2, prev2);
-    })
-    test1.value = 4;
-    test2.value = 10;
 
     const addTodo = async (todo) => {
       await axios.post("http://localhost:3000/todos", {
@@ -112,20 +90,16 @@ export default {
       });
       todos[idx].completed = !todos[idx].completed;
     };
-    const searchText = ref("");
-    const filteredTodos = computed(() => {
-      if (searchText.value) {
-        return todos.filter((todo) => todo.subject.includes(searchText.value));
-      }
-      return todos;
-    });
+
+    watch(searchText, () => {
+      getTodos(1)
+    })
     return {
       todos,
       deleteTodo,
       addTodo,
       toggleTodo,
       searchText,
-      filteredTodos,
       numberOfPages,
       currentPage,
       getTodos,
