@@ -16,6 +16,25 @@
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
+    <hr />
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li v-if="currentPage !== 1" class="page-item">
+          <a class="page-link" @click.stop="getTodos(currentPage - 1)">Previous</a>
+        </li>
+        <li 
+          v-for="page in numberOfPages" 
+          class="page-item" 
+          :key="page" 
+          :class="{'active': currentPage === page}"
+        >
+          <a class="page-link" @click.stop="getTodos(page)">{{page}}</a>
+        </li>
+        <li v-if="currentPage !== numberOfPages" class="page-item">
+          <a class="page-link" @click.stop="getTodos(currentPage + 1)">Next</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -29,16 +48,27 @@ export default {
   components: { TodoSimepleForm, TodoList },
   setup() {
     const todos = reactive([]);
+    const numberOfTodos = ref(0);
+    const limit = 5;
+    const currentPage = ref(1);
+
+    const numberOfPages = computed(() => {
+      return Math.ceil(numberOfTodos.value / limit);
+    })
+
+
     const deleteTodo = async (idx) => {
       const id = todos[idx].id;
       await axios.delete(`http://localhost:3000/todos/${id}`);
       todos.splice(idx, 1);
     };
 
-    const getTodos = async () => {
+    const getTodos = async (page = currentPage.value) => {
+      currentPage.value = page;
       try {
-        const { data } = await axios.get("http://localhost:3000/todos");
+        const { data, headers } = await axios.get(`http://localhost:3000/todos?_page=${page}&_limit=${limit}`);
         Object.assign(todos, data); // reactive의 value를 변경하는 법
+        numberOfTodos.value = headers['x-total-count'];
       } catch (e) {
         console.error(e);
       }
@@ -73,6 +103,9 @@ export default {
       toggleTodo,
       searchText,
       filteredTodos,
+      numberOfPages,
+      currentPage,
+      getTodos,
     };
   },
 };
