@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { reactive, computed, ref, watchEffect } from "vue";
+import { reactive, computed, ref, watch } from "vue";
 import TodoSimepleForm from "./components/TodoSimpleForm.vue";
 import TodoList from "./components/TodoList.vue";
 import axios from "axios";
@@ -74,12 +74,29 @@ export default {
       }
     };
     getTodos();
-    
-    // watchEffect: 즉시 한번 살행, 여러 개의 반응형 변수를 watch할 수 있음
-    watchEffect(() => {
-      console.log(currentPage.value)
-      console.log(todos)
+
+    // watch: 하나의 반응형 변수의 변화를 감지
+    // ref 변수를 감지하는 방법
+    watch(currentPage, (curr, prev) => {
+      console.log('hello', curr, prev)
     })
+
+    // reactive 변수를 감지하는 방법
+    const test = reactive({age: 1});
+    watch(() =>  test.age, (curr, prev) => {
+      console.log(curr, prev)
+    })
+    test.age = 15;
+
+    // 여러 개를 watch하는 방법 
+    const test1 = ref(1);
+    const test2 = ref(2);
+    watch([test1, test2], ([new1, new2], [prev1, prev2]) => {
+      console.log('test1', new1, prev1);
+      console.log('test2', new2, prev2);
+    })
+    test1.value = 4;
+    test2.value = 10;
 
     const addTodo = async (todo) => {
       await axios.post("http://localhost:3000/todos", {
