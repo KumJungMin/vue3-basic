@@ -6,6 +6,7 @@
       v-model="searchText"
       type="text"
       placeholder="Search"
+      @keyup.enter="searchTodo"
     />
     <hr />
     <TodoSimepleForm @add-todo="addTodo" />
@@ -61,13 +62,13 @@ export default {
     const deleteTodo = async (idx) => {
       const id = todos[idx].id;
       await axios.delete(`http://localhost:3000/todos/${id}`);
-      todos.splice(idx, 1);
+      getTodos(1);
     };
 
     const getTodos = async (page = currentPage.value) => {
       currentPage.value = page;
       try {
-        const { data, headers } = await axios.get(`http://localhost:3000/todos?subject_like=${searchText.value}&_page=${page}&_limit=${limit}`);
+        const { data, headers } = await axios.get(`http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`);
         Object.assign(todos, data); // reactive의 value를 변경하는 법
         numberOfTodos.value = headers['x-total-count'];
       } catch (e) {
@@ -81,7 +82,7 @@ export default {
         subject: todo.subject,
         completed: todo.completed,
       });
-      todos.push(todo);
+      getTodos(1)
     };
     const toggleTodo = async (idx) => {
       const id = todos[idx].id;
@@ -91,9 +92,19 @@ export default {
       todos[idx].completed = !todos[idx].completed;
     };
 
+    let timeout = null;
+    const searchTodo =()=> {
+      clearTimeout(timeout);
+      getTodos(1);
+    }
+
     watch(searchText, () => {
-      getTodos(1)
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        getTodos(1);
+      }, 1000)
     })
+
     return {
       todos,
       deleteTodo,
@@ -103,6 +114,7 @@ export default {
       numberOfPages,
       currentPage,
       getTodos,
+      searchTodo,
     };
   },
 };

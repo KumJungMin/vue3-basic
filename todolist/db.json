@@ -1,16 +1,6 @@
 {
   "todos": [
     {
-      "subject": "우유 사기",
-      "completed": true,
-      "id": 2
-    },
-    {
-      "subject": "aa",
-      "completed": false,
-      "id": 3
-    },
-    {
       "subject": "1",
       "completed": false,
       "id": 4
@@ -94,6 +84,21 @@
       "subject": "12",
       "completed": false,
       "id": 20
+    },
+    {
+      "subject": "asdasd",
+      "completed": false,
+      "id": 21
+    },
+    {
+      "subject": "sadasd",
+      "completed": false,
+      "id": 22
+    },
+    {
+      "subject": "1111",
+      "completed": false,
+      "id": 23
     }
   ]
 }
